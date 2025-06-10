@@ -407,11 +407,6 @@ const App = () => {
             fontSize: '0.9rem',
             marginTop: '15px'
           }}>{selectedItem.answer}</p>
-          <p style={{
-            fontSize: '0.85rem',
-            color: '#aaaaaa',
-            marginTop: '15px'
-          }}>{selectedItem.justification}</p>
         </div>
       )}
       
