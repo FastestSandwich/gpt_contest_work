@@ -1,71 +1,85 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const App = () => {
   const [items, setItems] = useState([
-    { id: 1, prompt: "Опиши профессию системного администратора в стиле фильма Форрест Гамп одним предложением", answer: "Системный администратор — это как коробка шоколадных конфет, никогда не знаешь, с каким вирусом или сбоем придется столкнуться, но он всегда спокойно и упорно чинит всё, чтобы сеть работала как часы." },
-    { id: 2, prompt: "Опиши профессию специалист по товарной политике в стиле ужастиков одним предложением", answer: "Специалист по товарной политике — это безумный кукловод, роковым взглядом манипулирующий ассортиментом и ценами, чтобы затянуть покупателей в зловещую ловушку маркетинговых интриг и вечного дефицита." },
-    { id: 3, prompt: "Опиши профессию Старший операционный менеджер в стиле вселенной одним предложением", answer: "Старший операционный менеджер — это центральная сила, которая, словно гравитация, удерживает вместе бесчисленные элементы бизнеса, направляя их движение в гармоничный и мощный космос успеха." },
-    { id: 4, prompt: "Опиши профессию заместителя информационно-справочной службы аптек в образе Тимати одним предложением", answer: "Заместитель информационно-справочной службы аптек — это словно Тимати в мире фармацевтики: всегда на стиле, чётко знает, как раскачать информационный поток, и быстро решает любые вопросы, оставаясь на пике популярности внутри коллектива." },
-    { id: 5, prompt: "опиши должность специалиста по охране труда в сказочном стиле", answer: "В волшебном королевстве Специалист по Охране Труда был добрым стражем безопасности, который с помощью магических правил и заботливых чар оберегал всех жителей от бед и несчастий, превращая труд в радость и гармонию." },
-    { id: 6, prompt: "Опиши профессию веб-аналитик в стиле персонажа \"Тимон и Пумба\" одним предложением", answer: "Веб-аналитик — это внимательный сурикат, который зорко следит за данными сайта и мобильного приложения, чтобы помочь своей цифровой стае стать самой успешной и привлекательной в интернете." },
-    { id: 7, prompt: "Опиши профессию провизор в стиле танос одним предложением", answer: "Провизор, как Танос фармацевтики, стремится собрать все знания о лекарствах, чтобы контролировать здоровье человечества и обеспечить его баланс." },
-    { id: 8, prompt: "Опиши профессию менеджера по закупкам лекарственных препаратов в стиле превью к телепередаче пусть говорят одним предложением", answer: "Сегодня в студии — менеджер по закупкам лекарственных препаратов, человек, который решает, какие лекарства попадут в аптеки и больницы, и кто контролирует баланс между здоровьем миллионов и прибыльностью фармацевтических гигантов — не пропустите!" },
-    { id: 9, prompt: "Опиши с юмором должность оператора по бонусной программе и техническим вопросам одним предложением в стиле детективов Конана Дойла.", answer: "Оператор по бонусной программе и техническим вопросам — это некий незаметный, но хитроумный сыщик цифрового мира, который, словно Шерлок с лупой, разгадывает загадки сбившихся бонусов и техподдержки..." },
-    { id: 10, prompt: "Опиши профессию менеджер по подбору персонала в стиле молчание ягнят одним предложением", answer: "Менеджер по подбору персонала — это искусный охотник за душами, который сканирует тьму резюме, проникает в глубины человеческих умов и ловко выбирает тех, кто идеально подходит..." },
-    { id: 11, prompt: "Опиши профессию специалист по сертификации и забраковке в стиле традиционной средневековой Японской поэзии одним предложением.", answer: "В тени сакуры под строгим взором старцев специалист, словно мечом разрезая тьму, проверяет целебные зелья, отделяя ложь от правды." },
-    { id: 12, prompt: "Опиши профессию специалист по ВЭД в стиле персонажа из книг Стивена Кинга одним предложением", answer: "Специалист по ВЭД — это словно человек, который в темных коридорах международной торговли ходит по тонкому льду, стараясь не провалиться в пропасть бюрократии..." },
-    { id: 13, prompt: "Опиши профессию главного бухгалтера в стиле Кин-дза-дза одним предложением", answer: "Главный бухгалтер - это высший чатлан Плюка, который без штанов, но с гигантской калькуляторной пушкой в руках так жёстко «хряпает» чужие деньги..." },
-    { id: 14, prompt: "Опиши профессию специалист экономической безопасности в стиле реп батла древнеримской эпохи одним предложением", answer: "Я, как легионер теней, стою на страже казны империи, врагам шепчу — тут не пройти, ведь я хранитель порядка и экономической судьбы!" },
-    { id: 15, prompt: "Опиши профессию менеджера по подбору персонала в стиле в стиле белки одним предложением", answer: "Менеджер по подбору персонала — это такая ловкая и быстрая белочка, которая мчится по веткам резюме и собеседований..." },
-    { id: 16, prompt: "Опиши профессию архивариуса в стиле комедии одним предложением.", answer: "Архивариус- это ловкий ниндзя бумаги, который с юмором и терпением выуживает из хаоса потерявшиеся документы..." },
-    { id: 17, prompt: "Опиши профессию провизор в стиле Говарда Лафкрафта одним предложением.", answer: "Провизор — это загадочный алхимик современных избранных, обреченный сквозь мрачные страницы древних манускриптов..." },
-    { id: 18, prompt: "Опиши профессию инженера по ремонту и эксплуатации аптек в стиле Гарика Харламова одним предложением:", answer: "Инженер по ремонту и эксплуатации аптек — это такой парень, который чинит аптеку так, чтобы лекарства не только выдавали..." },
-    { id: 19, prompt: "Опиши профессию заместителя директора одним предложением в стиле звездочета", answer: "Заместитель директора - это звезда, что светит рядом с ярким центром, направляя пути компании через туман неопределенности..." },
-    { id: 20, prompt: "Опиши профессию инженер по ремонту аптек в стиле Павла Воли одним предложением:", answer: "Инженер по ремонту аптек — это чувак, который чинит всё, что сломалось между градусником и кассой..." },
-    { id: 21, prompt: "Опиши профессию начальник информационно-справочной службы в стиле хоббитов одним предложением.", answer: "Начальник информационно-справочной службы — это такой добропорядочный хранитель списков, справок и полезных сведений..." },
-    { id: 22, prompt: "Опиши должность специалиста по маркировке в стиле Warhammer: Rogue trader одним предложением", answer: "Специалист по маркировке — это непоколебимый агент Империума, чьё острое око и священные печати безжалостно клеймят каждый товар..." },
-    { id: 23, prompt: "Опиши профессию  ведущего специалиста управления аптечной сетью в стиле котёнка мяу одним предложением.", answer: "Ведущий специалист управления аптечной сетью — это такой умный и ласковый эксперт, который мурлычет своими знаниями..." },
-    { id: 24, prompt: "опиши профессию инспектор по кадрам в стиле бойцовского клуба одним предложением", answer: "Инспектор по кадрам — это незаметный боец на передовой офисной войны, который знает все слабости сотрудников..." },
-    { id: 25, prompt: "Опиши профессию офис-менеджера административного отдела в стиле мультяшного героя Инспектор Гаджет, который много задач одновременно одним предложением.", answer: "Офис-менеджер административного отдела — это Инспектор Гаджет в мире офисной рутины: вытаскивает решения из кармана..." },
-    { id: 26, prompt: "Опиши профессию офис-менеджера административного отдела в стиле мультяшного героя Соник, который быстро и качественно делает свою работу одним предложением.", answer: "Офис-менеджер административного отдела — как Соник на кроссовках-реактивках: за секунду организует встречу..." },
-    { id: 27, prompt: "Опиши профессию специалиста по работе с базой наименований в стиле ДНД одним предложением", answer: "Специалист по работе с базой наименований — это мудрый хранитель волшебных свитков, который бережно ведет учет имен и тайн..." },
-    { id: 28, prompt: "Опиши профессию руководитель административного отдела в стиле контролера на входе в театр одним предложением.", answer: "Руководитель административного отдела — как контролёр на входе в театр: следит, чтобы всё было по регламенту..." },
-    { id: 29, prompt: "Опиши пожалуйста профессию сетевой инженер в стиле рассказов Лавкрафта одним предложением.", answer: "Сетевой инженер — это безумец, чьё сознание сковано тенетами невидимых сил и загадочных протоколов..." },
-    { id: 30, prompt: "Опиши профессию Бренд-менеджер в стиле Владимира Маяковского одним предложением", answer: "Бренд-менеджер — кличет, творит, кричит в мир ясный, чтоб имя торговое в каждом сердце билось страстно и властно!" },
-    { id: 31, prompt: "Профессия менеджера дирекции по закупкам  в образе Лилу из к/ф «Пятый элемент» в фантастическом стиле", answer: "Менеджер дирекции по закупкам — словно загадочная Лилу из будущего, что с космической ловкостью и интуицией сканирует галактики предложений..." },
-    { id: 32, prompt: "Опиши профессию архивариус в стиле юмористической фантастики одним предложением", answer: "Архивариус – это космический шериф, который борется с повстанцами Хаоса, сортируя вселенские документы..." },
-    { id: 33, prompt: "Опиши профессию менеджера по подбору персонала в стиле шизофреника одним предложением", answer: "Менеджер по подбору персонала — это тот, кто в хаосе мыслей и голосов внутри себя находит нужных людей..." },
-    { id: 34, prompt: "Опиши профессию экономиста в стиле ведущего кулинарного шоу, одним предложением", answer: "Экономист — это особое блюдо, в котором берется одна часть логики, две части запутанных графиков..." },
-    { id: 35, prompt: "Опиши профессию ведущий инспектор отдела кадров в стиле Мальвины одним предложением", answer: "Ведущий инспектор отдела кадров — это добросердечный и внимательный хранитель порядка в мире человеческих судеб..." },
-    { id: 36, prompt: "Опиши профессию Специалиста по охране труда в стиле война и мир одним предложением", answer: "Специалист по охране труда- это безмолвный страж, чья мудрость и неутомимая бдительность, подобного стратегу на поле битвы..." },
-    { id: 37, prompt: "Опиши профессию специалиста по развитию и обучению в стиле Фай Родис из романа Ефремова \"Час Быка\" одним предложением", answer: "Специалист по развитию и обучению — это проводник в неизведанные внутренние миры человеческих возможностей..." },
-    { id: 38, prompt: "Опиши профессию инженера программиста профессией провизора одним предложением", answer: "Инженер-программист — это как провизор, который вместо лекарств создает и \"лечит\" программы..." },
-    { id: 39, prompt: "Опиши профессию менеджера по персоналу в стиле Ежика в тумане одним предложением", answer: "Менеджер по персоналу — это такой проводник в тумане трудовых отношений, который мягко и заботливо помогает людям найти свой путь..." },
-    { id: 40, prompt: "Опиши профессию начальник отдела программ лояльности в стиле куклы чаки одним предложением", answer: "Начальник отдела программ лояльности — это как кукла Чаки: маленький, но ужасно хитрый и неотразимый мастер манипуляций..." },
-    { id: 41, prompt: "Опиши профессию маркетолога, продвигающего собственные торговые марки в аптечной сети в стиле Люциоса Малфоя, когда он выступает на совете магов одним предложением", answer: "Маркетолог, продвигающий собственные торговые марки в аптечной сети, подобен истинному знатоку искусства влияния..." }
+    { id: 1, prompt: "Опиши профессию системного администратора в стиле фильма Форрест Гамп одним предложением", answer: "Системный администратор — это как коробка шоколадных конфет, никогда не знаешь, с каким вирусом или сбоем придется столкнуться, но он всегда спокойно и упорно чинит всё, чтобы сеть работала как часы.", justification: "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Ответ выполнен в духе «фильма Форрест Гамп одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным." },
+    { id: 2, prompt: "Опиши профессию специалист по товарной политике в стиле ужастиков одним предложением", answer: "Специалист по товарной политике — это безумный кукловод, роковым взглядом манипулирующий ассортиментом и ценами, чтобы затянуть покупателей в зловещую ловушку маркетинговых интриг и вечного дефицита.", justification: "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Ответ выполнен в духе «ужастиков одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Такое описание точно привлечёт внимание и легко запомнится." },
+    { id: 3, prompt: "Опиши профессию Старший операционный менеджер в стиле вселенной одним предложением", answer: "Старший операционный менеджер — это центральная сила, которая, словно гравитация, удерживает вместе бесчисленные элементы бизнеса, направляя их движение в гармоничный и мощный космос успеха.", justification: "Использование узнаваемого культурного контекста делает промт выразительным и хорошо направляет на творческое переосмысление профессии. Ответ выполнен в духе «вселенной одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Эффектность формулировки усиливает интерес к самой профессии." },
+    { id: 4, prompt: "Опиши профессию заместителя информационно-справочной службы аптек в образе Тимати одним предложением", answer: "Заместитель информационно-справочной службы аптек — это словно Тимати в мире фармацевтики: всегда на стиле, чётко знает, как раскачать информационный поток, и быстро решает любые вопросы, оставаясь на пике популярности внутри коллектива.", justification: "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Стилистика «Тимати одним предложением» выдержана блестяще: читается сразу и вызывает живую ассоциацию. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным." },
+    { id: 5, prompt: "опиши должность специалиста по охране труда в сказочном стиле", answer: "В волшебном королевстве Специалист по Охране Труда был добрым стражем безопасности, который с помощью магических правил и заботливых чар оберегал всех жителей от бед и несчастий, превращая труд в радость и гармонию.", justification: "Промт фокусируется на профессии напрямую, что открывает широкие возможности для интерпретации и художественного подхода. Описание подано живо и выразительно, не теряя при этом связи с сутью профессии. Яркое, необычное выражение позволяет по-новому взглянуть на привычную роль." },
+    { id: 6, prompt: "Опиши профессию веб-аналитик в стиле персонажа \"Тимон и Пумба\" одним предложением", answer: "Веб-аналитик — это внимательный сурикат, который зорко следит за данными сайта и мобильного приложения, чтобы помочь своей цифровой стае стать самой успешной и привлекательной в интернете.", justification: "Формулировка промта задаёт чёткий стилистический ориентир, стимулируя нестандартный подход к описанию. Автору удалось вжиться в образ «персонажа \"Тимон и Пумба\" одним предложением» и передать его через язык описания профессии. Такое описание точно привлечёт внимание и легко запомнится." },
+    { id: 7, prompt: "Опиши профессию провизор в стиле танос одним предложением", answer: "Провизор, как Танос фармацевтики, стремится собрать все знания о лекарствах, чтобы контролировать здоровье человечества и обеспечить его баланс.", justification: "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Стилистика «танос одним предложением» выдержана блестяще: читается сразу и вызывает живую ассоциацию. Такое описание точно привлечёт внимание и легко запомнится." },
+    { id: 8, prompt: "Опиши профессию менеджера по закупкам лекарственных препаратов в стиле превью к телепередаче пусть говорят одним предложением", answer: "Сегодня в студии — менеджер по закупкам лекарственных препаратов, человек, который решает, какие лекарства попадут в аптеки и больницы, и кто контролирует баланс между здоровьем миллионов и прибыльностью фармацевтических гигантов — не пропустите!", justification: "Использование узнаваемого культурного контекста делает промт выразительным и хорошо направляет на творческое переосмысление профессии. Ответ точно воспроизводит стиль «превью к телепередаче пусть говорят одним предложением» — как по интонации, так и по характерной лексике. Эффектность формулировки усиливает интерес к самой профессии." },
+    { id: 9, prompt: "Опиши с юмором должность оператора по бонусной программе и техническим вопросам одним предложением в стиле детективов Конана Дойла.", answer: "Оператор по бонусной программе и техническим вопросам — это некий незаметный, но хитроумный сыщик цифрового мира, который, словно Шерлок с лупой, разгадывает загадки сбившихся бонусов и техподдержки, добывая улики в виде кода и кнопок, а когда система глючит, он в мгновение ока находит уязвимое место, раскрывая дело и возвращая порядок в виртуальный хаос, словно истинный мастер своего дела, который никогда не оставляет клиента в беде и всегда готов выйти на след.", justification: "Формулировка промта задаёт чёткий стилистический ориентир, стимулируя нестандартный подход к описанию. Ответ точно воспроизводит стиль «детективов Конана Дойла.» — как по интонации, так и по характерной лексике. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным." },
+    { id: 10, prompt: "Опиши профессию менеджер по подбору персонала в стиле молчание ягнят одним предложением", answer: "Менеджер по подбору персонала — это искусный охотник за душами, который сканирует тьму резюме, проникает в глубины человеческих умов и ловко выбирает тех, кто идеально подходит, словно хищник в ночи, без малейшей ошибки.", justification: "Выбранный стиль в промте провоцирует на креативную подачу и позволяет выйти за рамки формального объяснения профессии. Автору удалось вжиться в образ «молчание ягнят одним предложением» и передать его через язык описания профессии. Яркое, необычное выражение позволяет по-новому взглянуть на привычную роль." },
   ]);
   
   const [selectedItem, setSelectedItem] = useState(null);
   const [spinning, setSpinning] = useState(false);
-  const [showFireworks, setShowFireworks] = useState(false);
-  const [rotation, setRotation] = useState(0);
-  const [currentItemIndex, setCurrentItemIndex] = useState(0);
+  const [showButton, setShowButton] = useState(true);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [speed, setSpeed] = useState(0);
   const [animationId, setAnimationId] = useState(null);
+  const [showResult, setShowResult] = useState(false);
+  const [showFireworks, setShowFireworks] = useState(false);
+  const scrollContainerRef = useRef(null);
+  const itemWidthRef = useRef(0);
+  const itemRefs = useRef([]);
   const canvasRef = useRef(null);
-  const rotationRef = useRef(0);
-  const speedRef = useRef(0);
   const particlesRef = useRef([]);
+  const fireworksTimeoutRef = useRef(null);
+  const resultTimeoutRef = useRef(null);
   
-  // Инициализация canvas
-  const initCanvas = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    return ctx;
+  // Запуск прокрутки
+  const startScrolling = () => {
+    if (spinning || items.length === 0) return;
+    
+    setSpinning(true);
+    setSelectedItem(null);
+    setSpeed(15); // Начальная скорость
+    
+    // Небольшая задержка перед скрытием кнопки для визуального эффекта
+    setTimeout(() => setShowButton(false), 200);
+    
+    const animate = () => {
+      const newSpeed = speed * 0.95; // Замедление
+      const newScroll = scrollPosition + newSpeed;
+      
+      setScrollPosition(newScroll);
+      setSpeed(newSpeed);
+      
+      if (newSpeed > 0.5) {
+        setAnimationId(requestAnimationFrame(animate));
+      } else {
+        stopScrolling(newScroll);
+      }
+    };
+    
+    animate();
   };
   
-  // Создание частиц для фейерверка
+  // Остановка прокрутки
+  const stopScrolling = (finalScroll) => {
+    cancelAnimationFrame(animationId);
+    setSpinning(false);
+    
+    // Найдем ближайший элемент
+    const itemWidth = itemWidthRef.current + 20; // 20px margin
+    const selectedIndex = Math.round(finalScroll / itemWidth) % items.length;
+    
+    setSelectedItem(items[selectedIndex]);
+    
+    // Показываем результат с анимацией
+    resultTimeoutRef.current = setTimeout(() => {
+      setShowResult(true);
+      // Запускаем салют после появления плашки
+      setTimeout(() => {
+        launchFireworks();
+      }, 500);
+    }, 500);
+  };
+  
+  // Создание частиц фейерверка
   const createFireworksParticles = (x, y) => {
     const numParticles = 150;
     particlesRef.current = [];
@@ -75,7 +89,7 @@ const App = () => {
       const speed = Math.random() * 5 + 3;
       const life = Math.random() * 60 + 30;
       const radius = Math.random() * 3 + 1;
-      const hue = Math.random() * 360;
+      const hue = Math.floor(Math.random() * 60) * 6; // Неоновые оттенки (синий, зеленый, фиолетовый)
       
       particlesRef.current.push({
         x,
@@ -85,7 +99,9 @@ const App = () => {
         radius,
         hue,
         life,
-        opacity: 1
+        opacity: 1,
+        rotation: Math.random() * 2 * Math.PI,
+        rotationSpeed: (Math.random() - 0.5) * 0.2
       });
     }
   };
@@ -94,9 +110,11 @@ const App = () => {
   const animateFireworks = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
     
     ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, width, height);
     
     particlesRef.current = particlesRef.current.filter(particle => {
       particle.x += particle.vx;
@@ -104,10 +122,21 @@ const App = () => {
       particle.life--;
       particle.opacity = particle.life / 60;
       
+      ctx.save();
+      ctx.translate(particle.x, particle.y);
+      ctx.rotate(particle.rotation);
+      
+      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, particle.radius * 2);
+      gradient.addColorStop(0, `hsla(${particle.hue}, 100%, 70%, ${particle.opacity})`);
+      gradient.addColorStop(1, `hsla(${particle.hue}, 100%, 70%, 0)`);
+      
+      ctx.fillStyle = gradient;
       ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.radius, 0, 2 * Math.PI);
-      ctx.fillStyle = `hsla(${particle.hue}, 100%, 70%, ${particle.opacity})`;
+      ctx.arc(0, 0, particle.radius * 2, 0, 2 * Math.PI);
       ctx.fill();
+      ctx.restore();
+      
+      particle.rotation += particle.rotationSpeed;
       
       return particle.life > 0;
     });
@@ -120,70 +149,62 @@ const App = () => {
   // Запуск фейерверка
   const launchFireworks = () => {
     setShowFireworks(true);
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
     
-    createFireworksParticles(centerX, centerY);
-    animateFireworks();
+    // Запускаем несколько фейерверков в случайных местах
+    const fireworkPositions = [
+      { x: window.innerWidth * 0.2, y: window.innerHeight * 0.3 },
+      { x: window.innerWidth * 0.8, y: window.innerHeight * 0.4 },
+      { x: window.innerWidth * 0.5, y: window.innerHeight * 0.2 },
+      { x: window.innerWidth * 0.3, y: window.innerHeight * 0.7 },
+      { x: window.innerWidth * 0.7, y: window.innerHeight * 0.6 }
+    ];
     
-    setTimeout(() => {
+    // Создаем несколько фейерверков с интервалом
+    let fireworkIndex = 0;
+    const interval = setInterval(() => {
+      if (fireworkIndex >= fireworkPositions.length) {
+        clearInterval(interval);
+        return;
+      }
+      
+      createFireworksParticles(
+        fireworkPositions[fireworkIndex].x,
+        fireworkPositions[fireworkIndex].y
+      );
+      animateFireworks();
+      fireworkIndex++;
+    }, 800);
+    
+    // Останавливаем через 10 секунд
+    fireworksTimeoutRef.current = setTimeout(() => {
       setShowFireworks(false);
       particlesRef.current = [];
-    }, 3000);
+      clearInterval(interval);
+    }, 10000);
   };
   
-  // Анимация вращения барабана
-  const startSpinning = () => {
-    if (spinning) return;
-    
-    setSpinning(true);
-    setSelectedItem(null);
-    speedRef.current = 10; // Начальная скорость
-    rotationRef.current = 0;
-    
-    const spin = () => {
-      rotationRef.current += speedRef.current;
-      setRotation(rotationRef.current % 360);
-      
-      // Уменьшаем скорость со временем
-      speedRef.current *= 0.98;
-      
-      if (speedRef.current > 0.1) {
-        setAnimationId(requestAnimationFrame(spin));
-      } else {
-        stopSpinning();
-      }
-    };
-    
-    spin();
+  // Инициализация canvas
+  const initCanvas = () => {
+    const canvas = canvasRef.current;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    return canvas.getContext('2d');
   };
   
-  // Остановка барабана и выбор победителя
-  const stopSpinning = () => {
-    cancelAnimationFrame(animationId);
-    setSpinning(false);
-    
-    // Вычисляем индекс победителя
-    const itemHeight = 100; // Высота элемента в стилях
-    const totalItems = items.length;
-    const fullRotations = Math.floor(rotation / 360);
-    const finalRotation = rotation % 360;
-    const selectedIndex = totalItems - 1 - Math.round((finalRotation / 360) * totalItems) % totalItems;
-    
-    setSelectedItem(items[selectedIndex]);
-    
-    // Запускаем фейерверк
-    launchFireworks();
-  };
+  // Измерение ширины элемента
+  useEffect(() => {
+    if (itemRefs.current[0]) {
+      itemWidthRef.current = itemRefs.current[0].offsetWidth;
+    }
+  }, [items]);
   
   // Обработчик изменения размера окна
   useEffect(() => {
     const handleResize = () => {
-      if (canvasRef.current) {
-        const canvas = canvasRef.current;
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+      if (itemRefs.current[0]) {
+        itemWidthRef.current = itemRefs.current[0].offsetWidth;
       }
+      initCanvas();
     };
     
     window.addEventListener('resize', handleResize);
@@ -195,168 +216,218 @@ const App = () => {
     initCanvas();
   }, []);
   
+  // Очистка таймеров при размонтировании
+  useEffect(() => {
+    return () => {
+      clearTimeout(resultTimeoutRef.current);
+      clearTimeout(fireworksTimeoutRef.current);
+    };
+  }, []);
+  
+  // Очистка анимации при размонтировании
+  useEffect(() => {
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  }, [animationId]);
+  
   return (
     <div style={{
       position: 'relative',
       width: '100%',
       height: '100vh',
-      overflow: 'hidden',
-      backgroundColor: '#0f0f0f',
+      backgroundColor: '#0a0a0a',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       color: 'white',
-      padding: '20px'
+      padding: '20px',
+      fontFamily: 'Arial, sans-serif',
+      overflow: 'hidden'
     }}>
-      {/* Canvas для фейерверка */}
-      <canvas 
-        ref={canvasRef} 
-        style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          width: '100%', 
-          height: '100%', 
-          pointerEvents: 'none' 
-        }}
-      />
-      
+      {/* Заголовок */}
       <h1 style={{
-        fontSize: '2.5rem',
+        fontSize: '2rem',
         fontWeight: 'bold',
         marginBottom: '2rem',
         textAlign: 'center',
-        background: 'linear-gradient(90deg, #ff6b6b, #ff8e53, #ffd166)',
+        background: 'linear-gradient(90deg, #00f2ff, #00ff87, #d400ff)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
         animation: 'pulse 2s infinite'
       }}>
-        Выбрать победителя
+        Выберите победителя
       </h1>
       
-      {/* Барабан вращения */}
+      {/* Контейнер для прокрутки */}
       <div style={{
+        width: '90%',
+        maxWidth: '800px',
+        height: '100px',
+        overflow: 'hidden',
         position: 'relative',
-        width: '400px',
-        height: '300px',
-        perspective: '1000px',
         marginBottom: '2rem'
       }}>
-        <div style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          transformStyle: 'preserve-3d',
-          transform: `rotateX(${rotation}deg)`,
-          transition: spinning ? 'transform 0.1s linear' : 'transform 1s ease-out'
-        }}>
-          {items.map((item, index) => {
-            const angle = (360 / items.length) * index;
-            const radius = 150;
-            const radianAngle = (angle * Math.PI) / 180;
-            
-            const x = radius * Math.sin(radianAngle);
-            const y = -radius * Math.cos(radianAngle);
-            
-            return (
-              <div 
-                key={item.id}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: `translate(-50%, -50%) translate3d(${x}px, ${y}px, ${radius}px)`,
-                  transformOrigin: 'center',
-                  width: '300px',
-                  padding: '15px',
-                  backgroundColor: selectedItem?.id === item.id ? '#ff6b6b' : 'rgba(255, 255, 255, 0.1)',
-                  border: selectedItem?.id === item.id ? '2px solid #ffd166' : '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '10px',
-                  boxShadow: selectedItem?.id === item.id ? '0 0 15px rgba(255, 105, 180, 0.5)' : 'none',
-                  textAlign: 'center',
-                  fontSize: '0.9rem',
-                  transition: 'all 0.3s ease',
-                  pointerEvents: 'none',
-                  zIndex: selectedItem?.id === item.id ? 10 : 1
-                }}
-              >
-                {item.prompt}
-              </div>
-            );
-          })}
+        {/* Линия прокрутки */}
+        <div 
+          style={{
+            display: 'flex',
+            transform: `translateX(-${scrollPosition}px)`,
+            transition: spinning ? 'transform 0.05s linear' : 'transform 0.5s ease-out',
+            position: 'absolute',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          {/* Дублируем элементы для бесконечного скролла */}
+          {[...items, ...items].map((item, index) => (
+            <div 
+              key={`${item.id}-${index}`}
+              ref={(el) => itemRefs.current[index] = el}
+              style={{
+                width: '200px',
+                margin: '0 10px',
+                padding: '15px',
+                backgroundColor: selectedItem?.id === item.id ? '#00f2ff' : 'rgba(255, 255, 255, 0.1)',
+                border: selectedItem?.id === item.id ? '2px solid #00ff87' : '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '10px',
+                boxShadow: selectedItem?.id === item.id ? '0 0 15px rgba(0, 255, 135, 0.5)' : 'none',
+                textAlign: 'center',
+                fontSize: '0.85rem',
+                transition: 'all 0.3s ease',
+                flexShrink: 0,
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                color: selectedItem?.id === item.id ? '#000' : '#fff'
+              }}
+              title={item.prompt} // Подсказка при наведении
+            >
+              {item.prompt}
+            </div>
+          ))}
         </div>
         
-        {/* Указатель */}
+        {/* Эффект затемнения по краям */}
         <div style={{
           position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '0',
-          height: '0',
-          borderLeft: '20px solid transparent',
-          borderRight: '20px solid transparent',
-          borderBottom: '30px solid #ffd166',
-          zIndex: 20
+          top: 0,
+          left: 0,
+          width: '100px',
+          height: '100%',
+          background: 'linear-gradient(to right, #0a0a0a, transparent)',
+          pointerEvents: 'none',
+          zIndex: 1
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '100px',
+          height: '100%',
+          background: 'linear-gradient(to left, #0a0a0a, transparent)',
+          pointerEvents: 'none',
+          zIndex: 1
         }}></div>
       </div>
       
       {/* Кнопка */}
-      <button
-        onClick={startSpinning}
-        disabled={spinning}
-        style={{
-          padding: '15px 30px',
-          fontSize: '1.2rem',
-          fontWeight: 'bold',
-          color: 'white',
-          background: 'linear-gradient(90deg, #ff6b6b, #ff8e53)',
-          borderRadius: '50px',
-          boxShadow: spinning ? '0 0 15px rgba(255, 105, 180, 0.5)' : '0 0 15px rgba(255, 105, 180, 0.3)',
-          border: 'none',
-          cursor: spinning ? 'not-allowed' : 'pointer',
-          transition: 'all 0.3s ease',
-          position: 'relative',
-          overflow: 'hidden',
-          zIndex: 10
-        }}
-        onMouseEnter={(e) => {
-          if (!spinning) {
-            e.currentTarget.style.transform = 'scale(1.05)';
-            e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 105, 180, 0.7)';
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!spinning) {
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.boxShadow = '0 0 15px rgba(255, 105, 180, 0.5)';
-          }
-        }}
-      >
-        {spinning ? 'Вращается...' : 'Выбрать победителя'}
-      </button>
+      {showButton && (
+        <button
+          onClick={startScrolling}
+          disabled={spinning}
+          style={{
+            padding: '15px 30px',
+            fontSize: '1.2rem',
+            fontWeight: 'bold',
+            color: 'white',
+            background: 'linear-gradient(90deg, #00f2ff, #d400ff)',
+            borderRadius: '50px',
+            boxShadow: spinning ? '0 0 15px rgba(0, 242, 255, 0.5)' : '0 0 15px rgba(0, 242, 255, 0.3)',
+            border: 'none',
+            cursor: spinning ? 'not-allowed' : 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            overflow: 'hidden',
+            zIndex: 10
+          }}
+          onMouseEnter={(e) => {
+            if (!spinning) {
+              e.currentTarget.style.transform = 'scale(1.05)';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 242, 255, 0.7)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!spinning) {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 242, 255, 0.5)';
+            }
+          }}
+        >
+          {spinning ? 'Вращается...' : 'Выбрать победителя'}
+        </button>
+      )}
       
       {/* Результат */}
-      {selectedItem && (
+      {showResult && selectedItem && (
         <div style={{
-          position: 'absolute',
-          bottom: '20px',
           width: '90%',
           maxWidth: '600px',
           padding: '20px',
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          borderRadius: '10px',
           border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 0 15px rgba(255, 105, 180, 0.5)',
+          borderRadius: '10px',
+          boxShadow: '0 0 15px rgba(0, 242, 255, 0.5)',
           textAlign: 'center',
-          animation: 'fadeIn 1s ease-in-out'
+          animation: 'fadeIn 1s ease-in-out',
+          marginBottom: '2rem',
+          position: 'relative',
+          zIndex: 11,
+          backdropFilter: 'blur(5px)'
         }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '10px' }}>Победитель:</h3>
-          <p style={{ fontStyle: 'italic', marginBottom: '10px' }}>{selectedItem.prompt}</p>
-          <p style={{ color: '#ffd166' }}>{selectedItem.answer}</p>
+          <h3 style={{
+            fontSize: '1.2rem',
+            fontWeight: 'bold',
+            marginBottom: '10px',
+            color: '#00f2ff',
+            animation: 'neonGlow 1.5s infinite alternate'
+          }}>
+            Победитель:
+          </h3>
+          <p style={{
+            fontStyle: 'italic',
+            marginBottom: '10px',
+            color: '#00ff87',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}>{selectedItem.prompt}</p>
+          <p style={{
+            color: '#d400ff',
+            fontSize: '0.9rem',
+            marginTop: '15px'
+          }}>{selectedItem.answer}</p>
+          <p style={{
+            fontSize: '0.85rem',
+            color: '#aaaaaa',
+            marginTop: '15px'
+          }}>{selectedItem.justification}</p>
         </div>
       )}
+      
+      {/* Canvas для фейерверка */}
+      <canvas 
+        ref={canvasRef} 
+        style={{ 
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 9
+        }}
+      />
       
       {/* Стили для анимаций */}
       <style>{`
@@ -368,6 +439,15 @@ const App = () => {
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes neonGlow {
+          from {
+            text-shadow: 0 0 5px #00f2ff, 0 0 10px #00f2ff, 0 0 20px #00f2ff;
+          }
+          to {
+            text-shadow: 0 0 10px #00f2ff, 0 0 20px #00f2ff, 0 0 30px #00f2ff;
+          }
         }
       `}</style>
     </div>
