@@ -18,10 +18,12 @@ const App = () => {
   const [spinning, setSpinning] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [targetScroll, setTargetScroll] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [animationId, setAnimationId] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [showFireworks, setShowFireworks] = useState(false);
+  const [thinking, setThinking] = useState(false);
   const scrollContainerRef = useRef(null);
   const itemWidthRef = useRef(0);
   const itemRefs = useRef([]);
@@ -29,6 +31,7 @@ const App = () => {
   const particlesRef = useRef([]);
   const fireworksTimeoutRef = useRef(null);
   const resultTimeoutRef = useRef(null);
+  const thinkingTimeoutRef = useRef(null);
   
   // Запуск прокрутки
   const startScrolling = () => {
@@ -36,47 +39,56 @@ const App = () => {
     
     setSpinning(true);
     setSelectedItem(null);
-    setSpeed(15); // Начальная скорость
+    setShowResult(false);
+    setThinking(true);
+    setShowButton(false);
     
-    // Небольшая задержка перед скрытием кнопки для визуального эффекта
-    setTimeout(() => setShowButton(false), 200);
-    
-    const animate = () => {
-      const newSpeed = speed * 0.95; // Замедление
-      const newScroll = scrollPosition + newSpeed;
+    // Симуляция "думающего" состояния
+    thinkingTimeoutRef.current = setTimeout(() => {
+      setThinking(false);
       
-      setScrollPosition(newScroll);
-      setSpeed(newSpeed);
+      // Выбираем случайный элемент
+      const randomIndex = Math.floor(Math.random() * items.length);
+      const itemWidth = itemWidthRef.current + 20; // 20px margin
       
-      if (newSpeed > 0.5) {
-        setAnimationId(requestAnimationFrame(animate));
-      } else {
-        stopScrolling(newScroll);
-      }
-    };
-    
-    animate();
+      // Рассчитываем целевую позицию прокрутки
+      const randomOffset = Math.random() * itemWidth * 2 - itemWidth; // Случайный сдвиг для разнообразия
+      const target = (randomIndex * itemWidth) + randomOffset;
+      
+      setTargetScroll(target);
+      setSpeed(15); // Начальная скорость
+      animate();
+    }, 1500); // 1.5 секунды "размышления"
   };
   
-  // Остановка прокрутки
-  const stopScrolling = (finalScroll) => {
-    cancelAnimationFrame(animationId);
-    setSpinning(false);
+  // Анимация прокрутки
+  const animate = () => {
+    const itemWidth = itemWidthRef.current + 20;
+    const difference = targetScroll - scrollPosition;
+    const acceleration = difference / 100; // Ускорение
     
-    // Найдем ближайший элемент
-    const itemWidth = itemWidthRef.current + 20; // 20px margin
-    const selectedIndex = Math.round(finalScroll / itemWidth) % items.length;
-    
-    setSelectedItem(items[selectedIndex]);
-    
-    // Показываем результат с анимацией
-    resultTimeoutRef.current = setTimeout(() => {
-      setShowResult(true);
-      // Запускаем салют после появления плашки
-      setTimeout(() => {
-        launchFireworks();
+    if (Math.abs(difference) > 1 || Math.abs(speed) > 0.5) {
+      const newSpeed = speed + acceleration * 0.1;
+      const newScroll = scrollPosition + newSpeed;
+      
+      setSpeed(newSpeed);
+      setScrollPosition(newScroll);
+      setAnimationId(requestAnimationFrame(animate));
+    } else {
+      // Останавливаемся на случайном элементе
+      setSpinning(false);
+      const selectedIndex = Math.round(targetScroll / itemWidth) % items.length;
+      setSelectedItem(items[selectedIndex]);
+      
+      // Показываем результат с анимацией
+      resultTimeoutRef.current = setTimeout(() => {
+        setShowResult(true);
+        // Запускаем салют после появления плашки
+        setTimeout(() => {
+          launchFireworks();
+        }, 500);
       }, 500);
-    }, 500);
+    }
   };
   
   // Создание частиц фейерверка
@@ -149,6 +161,8 @@ const App = () => {
   // Запуск фейерверка
   const launchFireworks = () => {
     setShowFireworks(true);
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
     
     // Запускаем несколько фейерверков в случайных местах
     const fireworkPositions = [
@@ -159,7 +173,6 @@ const App = () => {
       { x: window.innerWidth * 0.7, y: window.innerHeight * 0.6 }
     ];
     
-    // Создаем несколько фейерверков с интервалом
     let fireworkIndex = 0;
     const interval = setInterval(() => {
       if (fireworkIndex >= fireworkPositions.length) {
@@ -221,6 +234,7 @@ const App = () => {
     return () => {
       clearTimeout(resultTimeoutRef.current);
       clearTimeout(fireworksTimeoutRef.current);
+      clearTimeout(thinkingTimeoutRef.current);
     };
   }, []);
   
@@ -269,6 +283,22 @@ const App = () => {
         position: 'relative',
         marginBottom: '2rem'
       }}>
+        {/* Эффект "думающей" прокрутки */}
+        {thinking && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            color: '#00f2ff',
+            animation: 'neonGlow 1s infinite alternate'
+          }}>
+            Думаю...
+          </div>
+        )}
+        
         {/* Линия прокрутки */}
         <div 
           style={{
@@ -301,7 +331,7 @@ const App = () => {
                 textOverflow: 'ellipsis',
                 color: selectedItem?.id === item.id ? '#000' : '#fff'
               }}
-              title={item.prompt} // Подсказка при наведении
+              title={item.prompt}
             >
               {item.prompt}
             </div>
@@ -352,19 +382,19 @@ const App = () => {
             zIndex: 10
           }}
           onMouseEnter={(e) => {
-            if (!spinning) {
+            if (!spinning && !thinking) {
               e.currentTarget.style.transform = 'scale(1.05)';
               e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 242, 255, 0.7)';
             }
           }}
           onMouseLeave={(e) => {
-            if (!spinning) {
+            if (!spinning && !thinking) {
               e.currentTarget.style.transform = 'scale(1)';
               e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 242, 255, 0.5)';
             }
           }}
         >
-          {spinning ? 'Вращается...' : 'Выбрать победителя'}
+          {spinning || thinking ? 'Думаю...' : 'Выбрать победителя'}
         </button>
       )}
       
@@ -407,6 +437,11 @@ const App = () => {
             fontSize: '0.9rem',
             marginTop: '15px'
           }}>{selectedItem.answer}</p>
+          <p style={{
+            fontSize: '0.85rem',
+            color: '#aaaaaa',
+            marginTop: '15px'
+          }}>{selectedItem.justification}</p>
         </div>
       )}
       
