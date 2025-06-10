@@ -1,483 +1,364 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from "react";
 
 const App = () => {
-  const [items, setItems] = useState([
-    { id: 1, prompt: "Опиши профессию системного администратора в стиле фильма Форрест Гамп одним предложением", answer: "Системный администратор — это как коробка шоколадных конфет, никогда не знаешь, с каким вирусом или сбоем придется столкнуться, но он всегда спокойно и упорно чинит всё, чтобы сеть работала как часы.", justification: "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Ответ выполнен в духе «фильма Форрест Гамп одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным." },
-    { id: 2, prompt: "Опиши профессию специалист по товарной политике в стиле ужастиков одним предложением", answer: "Специалист по товарной политике — это безумный кукловод, роковым взглядом манипулирующий ассортиментом и ценами, чтобы затянуть покупателей в зловещую ловушку маркетинговых интриг и вечного дефицита.", justification: "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Ответ выполнен в духе «ужастиков одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Такое описание точно привлечёт внимание и легко запомнится." },
-    { id: 3, prompt: "Опиши профессию Старший операционный менеджер в стиле вселенной одним предложением", answer: "Старший операционный менеджер — это центральная сила, которая, словно гравитация, удерживает вместе бесчисленные элементы бизнеса, направляя их движение в гармоничный и мощный космос успеха.", justification: "Использование узнаваемого культурного контекста делает промт выразительным и хорошо направляет на творческое переосмысление профессии. Ответ выполнен в духе «вселенной одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Эффектность формулировки усиливает интерес к самой профессии." },
-    { id: 4, prompt: "Опиши профессию заместителя информационно-справочной службы аптек в образе Тимати одним предложением", answer: "Заместитель информационно-справочной службы аптек — это словно Тимати в мире фармацевтики: всегда на стиле, чётко знает, как раскачать информационный поток, и быстро решает любые вопросы, оставаясь на пике популярности внутри коллектива.", justification: "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Стилистика «Тимати одним предложением» выдержана блестяще: читается сразу и вызывает живую ассоциацию. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным." },
-    { id: 5, prompt: "опиши должность специалиста по охране труда в сказочном стиле", answer: "В волшебном королевстве Специалист по Охране Труда был добрым стражем безопасности, который с помощью магических правил и заботливых чар оберегал всех жителей от бед и несчастий, превращая труд в радость и гармонию.", justification: "Промт фокусируется на профессии напрямую, что открывает широкие возможности для интерпретации и художественного подхода. Описание подано живо и выразительно, не теряя при этом связи с сутью профессии. Яркое, необычное выражение позволяет по-новому взглянуть на привычную роль." },
-    { id: 6, prompt: "Опиши профессию веб-аналитик в стиле персонажа \"Тимон и Пумба\" одним предложением", answer: "Веб-аналитик — это внимательный сурикат, который зорко следит за данными сайта и мобильного приложения, чтобы помочь своей цифровой стае стать самой успешной и привлекательной в интернете.", justification: "Формулировка промта задаёт чёткий стилистический ориентир, стимулируя нестандартный подход к описанию. Автору удалось вжиться в образ «персонажа \"Тимон и Пумба\" одним предложением» и передать его через язык описания профессии. Такое описание точно привлечёт внимание и легко запомнится." },
-    { id: 7, prompt: "Опиши профессию провизор в стиле танос одним предложением", answer: "Провизор, как Танос фармацевтики, стремится собрать все знания о лекарствах, чтобы контролировать здоровье человечества и обеспечить его баланс.", justification: "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Стилистика «танос одним предложением» выдержана блестяще: читается сразу и вызывает живую ассоциацию. Такое описание точно привлечёт внимание и легко запомнится." },
-    { id: 8, prompt: "Опиши профессию менеджера по закупкам лекарственных препаратов в стиле превью к телепередаче пусть говорят одним предложением", answer: "Сегодня в студии — менеджер по закупкам лекарственных препаратов, человек, который решает, какие лекарства попадут в аптеки и больницы, и кто контролирует баланс между здоровьем миллионов и прибыльностью фармацевтических гигантов — не пропустите!", justification: "Использование узнаваемого культурного контекста делает промт выразительным и хорошо направляет на творческое переосмысление профессии. Ответ точно воспроизводит стиль «превью к телепередаче пусть говорят одним предложением» — как по интонации, так и по характерной лексике. Эффектность формулировки усиливает интерес к самой профессии." },
-    { id: 9, prompt: "Опиши с юмором должность оператора по бонусной программе и техническим вопросам одним предложением в стиле детективов Конана Дойла.", answer: "Оператор по бонусной программе и техническим вопросам — это некий незаметный, но хитроумный сыщик цифрового мира, который, словно Шерлок с лупой, разгадывает загадки сбившихся бонусов и техподдержки, добывая улики в виде кода и кнопок, а когда система глючит, он в мгновение ока находит уязвимое место, раскрывая дело и возвращая порядок в виртуальный хаос, словно истинный мастер своего дела, который никогда не оставляет клиента в беде и всегда готов выйти на след.", justification: "Формулировка промта задаёт чёткий стилистический ориентир, стимулируя нестандартный подход к описанию. Ответ точно воспроизводит стиль «детективов Конана Дойла.» — как по интонации, так и по характерной лексике. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным." },
-    { id: 10, prompt: "Опиши профессию менеджер по подбору персонала в стиле молчание ягнят одним предложением", answer: "Менеджер по подбору персонала — это искусный охотник за душами, который сканирует тьму резюме, проникает в глубины человеческих умов и ловко выбирает тех, кто идеально подходит, словно хищник в ночи, без малейшей ошибки.", justification: "Выбранный стиль в промте провоцирует на креативную подачу и позволяет выйти за рамки формального объяснения профессии. Автору удалось вжиться в образ «молчание ягнят одним предложением» и передать его через язык описания профессии. Яркое, необычное выражение позволяет по-новому взглянуть на привычную роль." },
-  ]);
-  
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [spinning, setSpinning] = useState(false);
-  const [showButton, setShowButton] = useState(true);
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [targetScroll, setTargetScroll] = useState(0);
-  const [speed, setSpeed] = useState(0);
-  const [animationId, setAnimationId] = useState(null);
-  const [showResult, setShowResult] = useState(false);
-  const [showFireworks, setShowFireworks] = useState(false);
-  const [thinking, setThinking] = useState(false);
-  const scrollContainerRef = useRef(null);
-  const itemWidthRef = useRef(0);
-  const itemRefs = useRef([]);
-  const canvasRef = useRef(null);
-  const particlesRef = useRef([]);
-  const fireworksTimeoutRef = useRef(null);
-  const resultTimeoutRef = useRef(null);
-  const thinkingTimeoutRef = useRef(null);
-  
-  // Запуск прокрутки
-  const startScrolling = () => {
-    if (spinning || items.length === 0) return;
-    
-    setSpinning(true);
-    setSelectedItem(null);
-    setShowResult(false);
-    setThinking(true);
-    setShowButton(false);
-    
-    // Симуляция "думающего" состояния
-    thinkingTimeoutRef.current = setTimeout(() => {
-      setThinking(false);
-      
-      // Выбираем случайный элемент
-      const randomIndex = Math.floor(Math.random() * items.length);
-      const itemWidth = itemWidthRef.current + 20; // 20px margin
-      
-      // Рассчитываем целевую позицию прокрутки
-      const randomOffset = Math.random() * itemWidth * 2 - itemWidth; // Случайный сдвиг для разнообразия
-      const target = (randomIndex * itemWidth) + randomOffset;
-      
-      setTargetScroll(target);
-      setSpeed(15); // Начальная скорость
-      animate();
-    }, 1500); // 1.5 секунды "размышления"
-  };
-  
-  // Анимация прокрутки
-  const animate = () => {
-    const itemWidth = itemWidthRef.current + 20;
-    const difference = targetScroll - scrollPosition;
-    const acceleration = difference / 100; // Ускорение
-    
-    if (Math.abs(difference) > 1 || Math.abs(speed) > 0.5) {
-      const newSpeed = speed + acceleration * 0.1;
-      const newScroll = scrollPosition + newSpeed;
-      
-      setSpeed(newSpeed);
-      setScrollPosition(newScroll);
-      setAnimationId(requestAnimationFrame(animate));
-    } else {
-      // Останавливаемся на случайном элементе
-      setSpinning(false);
-      const selectedIndex = Math.round(targetScroll / itemWidth) % items.length;
-      setSelectedItem(items[selectedIndex]);
-      
-      // Показываем результат с анимацией
-      resultTimeoutRef.current = setTimeout(() => {
-        setShowResult(true);
-        // Запускаем салют после появления плашки
-        setTimeout(() => {
-          launchFireworks();
-        }, 500);
-      }, 500);
+  const [winner, setWinner] = useState(null);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [particles, setParticles] = useState([]);
+  const [showExplosion, setShowExplosion] = useState(false);
+  const [currentPreview, setCurrentPreview] = useState({ prompt: "", answer: "" });
+
+  // Данные из файла для разыгрыша.xlsx
+  const entries = [
+    {
+      prompt: "Опиши профессию системного администратора в стиле фильма Форрест Гамп одним предложением",
+      answer:
+        "Системный администратор — это как коробка шоколадных конфет, никогда не знаешь, с каким вирусом или сбоем придется столкнуться, но он всегда спокойно и упорно чинит всё, чтобы сеть работала как часы.",
+      explanation:
+        "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Ответ выполнен в духе «фильма Форрест Гамп одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным."
+    },
+    {
+      prompt: "Опиши профессию специалист по товарной политике в стиле ужастиков одним предложением",
+      answer:
+        "Специалист по товарной политике — это безумный кукловод, роковым взглядом манипулирующий ассортиментом и ценами, чтобы затянуть покупателей в зловещую ловушку маркетинговых интриг и вечного дефицита.",
+      explanation:
+        "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Ответ выполнен в духе «ужастиков одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Такое описание точно привлечёт внимание и легко запомнится."
+    },
+    {
+      prompt: "Опиши профессию Старший операционный менеджер в стиле вселенной Marvel одним предложением",
+      answer:
+        "Старший операционный менеджер — это центральная сила, которая, словно гравитация, удерживает вместе бесчисленные элементы бизнеса, направляя их движение в гармоничный и мощный космос успеха.",
+      explanation:
+        "Использование узнаваемого культурного контекста делает промт выразительным и хорошо направляет на творческое переосмысление профессии. Ответ выполнен в духе «вселенной Marvel одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Эффектность формулировки усиливает интерес к самой профессии."
+    },
+    {
+      prompt: "Опиши профессию заместителя информационно-справочной службы аптек в образе Тимати одним предложением",
+      answer:
+        "Заместитель информационно-справочной службы аптек — это словно Тимати в мире фармацевтики: всегда на стиле, чётко знает, как раскачать информационный поток, и быстро решает любые вопросы, оставаясь на пике популярности внутри коллектива.",
+      explanation:
+        "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Стилистика «Тимати одним предложением» выдержана блестяще: читается сразу и вызывает живую ассоциацию. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным."
+    },
+    {
+      prompt: "Опиши должность специалиста по охране труда в сказочном стиле",
+      answer:
+        "В волшебном королевстве Специалист по Охране Труда был добрым стражем безопасности, который с помощью магических правил и заботливых чар оберегал всех жителей от бед и несчастий, превращая труд в радость и гармонию.",
+      explanation:
+        "Промт фокусируется на профессии напрямую, что открывает широкие возможности для интерпретации и художественного подхода. Описание подано живо и выразительно, не теряя при этом связи с сутью профессии. Яркое, необычное выражение позволяет по-новому взглянуть на привычную роль."
+    },
+    {
+      prompt: "Опиши профессию веб-аналитик в стиле персонажа \"Тимон и Пумба\" одним предложением",
+      answer:
+        "Веб-аналитик — это внимательный сурикат, который зорко следит за данными сайта и мобильного приложения, чтобы помочь своей цифровой стае стать самой успешной и привлекательной в интернете.",
+      explanation:
+        "Формулировка промта задаёт чёткий стилистический ориентир, стимулируя нестандартный подход к описанию. Автору удалось вжиться в образ «персонажа \"Тимон и Пумба\" одним предложением» и передать его через язык описания профессии. Такое описание точно привлечёт внимание и легко запомнится."
+    },
+    {
+      prompt: "Опиши профессию провизор в стиле танос одним предложением",
+      answer:
+        "Провизор, как Танос фармацевтики, стремится собрать все знания о лекарствах, чтобы контролировать здоровье человечества и обеспечить его баланс.",
+      explanation:
+        "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Стилистика «танос одним предложением» выдержана блестяще: читается сразу и вызывает живую ассоциацию. Такое описание точно привлечёт внимание и легко запомнится."
+    },
+    {
+      prompt: "Опиши профессию менеджера по закупкам лекарственных препаратов в стиле превью к телепередаче пусть говорят одним предложением",
+      answer:
+        "Сегодня в студии — менеджер по закупкам лекарственных препаратов, человек, который решает, какие лекарства попадут в аптеки и больницы, и кто контролирует баланс между здоровьем миллионов и прибыльностью фармацевтических гигантов — не пропустите!",
+      explanation:
+        "Использование узнаваемого культурного контекста делает промт выразительным и хорошо направляет на творческое переосмысление профессии. Ответ точно воспроизводит стиль «превью к телепередаче пусть говорят одним предложением» — как по интонации, так и по характерной лексике. Эффектность формулировки усиливает интерес к самой профессии."
+    },
+    {
+      prompt: "Опиши профессию оператора по бонусной программе и техническим вопросам в стиле детективов Конана Дойла одним предложением",
+      answer:
+        "Оператор по бонусной программе и техническим вопросам — это некий незаметный, но хитроумный сыщик цифрового мира, который, словно Шерлок с лупой, разгадывает загадки сбившихся бонусов и техподдержки, добывая улики в виде кода и кнопок.",
+      explanation:
+        "Формулировка промта задаёт чёткий стилистический ориентир, стимулируя нестандартный подход к описанию. Ответ точно воспроизводит стиль «детективов Конана Дойла.» — как по интонации, так и по характерной лексике. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным."
+    },
+    {
+      prompt: "Опиши профессию специалиста по сертификации и забраковке в стиле средневековой Японской поэзии одним предложением.",
+      answer:
+        "В тени сакуры под строгим взором старцев специалист, словно мечом разрезая тьму, проверяет целебные зелья, отделяя ложь от правды.",
+      explanation:
+        "Промт демонстрирует нестандартное мышление, задавая оригинальный художественный стиль, который раскрывает профессию с неожиданной стороны. Стилистика «средневековой Японской поэзии одним предложением.» выдержана блестяще: читается сразу и вызывает живую ассоциацию. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным."
+    },
+    {
+      prompt: "Опиши профессию специалиста по ВЭД в стиле персонажа из книг Стивена Кинга одним предложением",
+      answer:
+        "Специалист по ВЭД — это словно человек, который в темных коридорах международной торговли ходит по тонкому льду, стараясь не провалиться в пропасть бюрократии и неожиданных кризисов, где за каждым контрактом может скрываться своя маленькая жуткая тайна.",
+      explanation:
+        "Использование узнаваемого культурного контекста делает промт выразительным и хорошо направляет на творческое переосмысление профессии. Ответ выполнен в духе «персонажа из книг Стивена Кинга одним предложением», грамотно обыгрывая особенности языка и поведения персонажа. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным."
+    },
+    {
+      prompt: "Опиши профессию специалиста экономической безопасности в стиле реп батла древнеримской эпохи одним предложением",
+      answer:
+        "Я, как легионер теней, стою на страже казны империи, врагам шепчу — тут не пройти, ведь я хранитель порядка и экономической судьбы!",
+      explanation:
+        "Использование узнаваемого культурного контекста делает промт выразительным и хорошо направляет на творческое переосмысление профессии. Ответ точно воспроизводит стиль «реп батла древнеримской эпохи одним предложением» — как по интонации, так и по характерной лексике. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным."
+    },
+    {
+      prompt: "Опиши профессию менеджера по подбору персонала в стиле белки одним предложением",
+      answer:
+        "Менеджер по подбору персонала — это такая ловкая и быстрая белочка, которая мчится по веткам резюме и собеседований, чтобы собрать самую крепкую и дружную команду для большого корпоративного леса!",
+      explanation:
+        "Формулировка промта задаёт чёткий стилистический ориентир, стимулируя нестандартный подход к описанию. Стилистика «белки одним предложением» выдержана блестяще: читается сразу и вызывает живую ассоциацию. Идеальное сочетание иронии и профессионализма делает ответ особенно удачным."
+    },
+    {
+      prompt: "Опиши профессию архивариуса в стиле комедии одним предложением.",
+      answer:
+        "Архивариус- это ловкий ниндзя бумаги, который с юмором и терпением выуживает из хаоса потерявшиеся документы и тайком прячет секретные файлы от любопытных коллег.",
+      explanation:
+        "Формулировка промта задаёт чёткий стилистический ориентир, стимулируя нестандартный подход к описанию. Ответ выполнен в духе «комедии одним предложением.», грамотно обыгрывая особенности языка и поведения персонажа. Яркое, необычное выражение позволяет по-новому взглянуть на привычную роль."
     }
+    // Можно добавить остальные записи из Excel
+  ];
+
+  const selectWinner = () => {
+    if (isSpinning) return;
+
+    setIsSpinning(true);
+    setProgress(0);
+
+    let spinCount = 0;
+    const maxSpins = 14; // ~7 секунд при 500 мс
+
+    const interval = setInterval(() => {
+      if (spinCount < maxSpins) {
+        const randomEntry = entries[Math.floor(Math.random() * entries.length)];
+        setCurrentPreview({
+          prompt: randomEntry.prompt,
+          answer: randomEntry.answer,
+        });
+        setProgress((spinCount / maxSpins) * 100);
+        spinCount++;
+      } else {
+        clearInterval(interval);
+        const finalEntry = entries[Math.floor(Math.random() * entries.length)];
+        setWinner(finalEntry);
+        triggerExplosion();
+        setTimeout(() => {
+          setIsSpinning(false);
+        }, 800);
+      }
+    }, 500);
   };
-  
-  // Создание частиц фейерверка
-  const createFireworksParticles = (x, y) => {
-    const numParticles = 150;
-    particlesRef.current = [];
-    
-    for (let i = 0; i < numParticles; i++) {
+
+  const triggerExplosion = () => {
+    setShowExplosion(true);
+    const newParticles = [];
+
+    for (let i = 0; i < 30; i++) {
       const angle = Math.random() * 2 * Math.PI;
-      const speed = Math.random() * 5 + 3;
-      const life = Math.random() * 60 + 30;
-      const radius = Math.random() * 3 + 1;
-      const hue = Math.floor(Math.random() * 60) * 6; // Неоновые оттенки (синий, зеленый, фиолетовый)
-      
-      particlesRef.current.push({
-        x,
-        y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        radius,
-        hue,
-        life,
-        opacity: 1,
-        rotation: Math.random() * 2 * Math.PI,
-        rotationSpeed: (Math.random() - 0.5) * 0.2
+      const speed = Math.random() * 6 + 2;
+      newParticles.push({
+        x: 0,
+        y: 0,
+        dx: Math.cos(angle) * speed,
+        dy: Math.sin(angle) * speed,
       });
     }
+
+    setParticles(newParticles);
+
+    setTimeout(() => {
+      setShowExplosion(false);
+      setParticles([]);
+    }, 1000);
   };
-  
-  // Анимация фейерверка
-  const animateFireworks = () => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
-    
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-    ctx.fillRect(0, 0, width, height);
-    
-    particlesRef.current = particlesRef.current.filter(particle => {
-      particle.x += particle.vx;
-      particle.y += particle.vy;
-      particle.life--;
-      particle.opacity = particle.life / 60;
-      
-      ctx.save();
-      ctx.translate(particle.x, particle.y);
-      ctx.rotate(particle.rotation);
-      
-      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, particle.radius * 2);
-      gradient.addColorStop(0, `hsla(${particle.hue}, 100%, 70%, ${particle.opacity})`);
-      gradient.addColorStop(1, `hsla(${particle.hue}, 100%, 70%, 0)`);
-      
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(0, 0, particle.radius * 2, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.restore();
-      
-      particle.rotation += particle.rotationSpeed;
-      
-      return particle.life > 0;
-    });
-    
-    if (particlesRef.current.length > 0) {
-      requestAnimationFrame(animateFireworks);
-    }
-  };
-  
-  // Запуск фейерверка
-  const launchFireworks = () => {
-    setShowFireworks(true);
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-    
-    // Запускаем несколько фейерверков в случайных местах
-    const fireworkPositions = [
-      { x: window.innerWidth * 0.2, y: window.innerHeight * 0.3 },
-      { x: window.innerWidth * 0.8, y: window.innerHeight * 0.4 },
-      { x: window.innerWidth * 0.5, y: window.innerHeight * 0.2 },
-      { x: window.innerWidth * 0.3, y: window.innerHeight * 0.7 },
-      { x: window.innerWidth * 0.7, y: window.innerHeight * 0.6 }
-    ];
-    
-    let fireworkIndex = 0;
-    const interval = setInterval(() => {
-      if (fireworkIndex >= fireworkPositions.length) {
-        clearInterval(interval);
-        return;
-      }
-      
-      createFireworksParticles(
-        fireworkPositions[fireworkIndex].x,
-        fireworkPositions[fireworkIndex].y
-      );
-      animateFireworks();
-      fireworkIndex++;
-    }, 800);
-    
-    // Останавливаем через 10 секунд
-    fireworksTimeoutRef.current = setTimeout(() => {
-      setShowFireworks(false);
-      particlesRef.current = [];
-      clearInterval(interval);
-    }, 10000);
-  };
-  
-  // Инициализация canvas
-  const initCanvas = () => {
-    const canvas = canvasRef.current;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    return canvas.getContext('2d');
-  };
-  
-  // Измерение ширины элемента
-  useEffect(() => {
-    if (itemRefs.current[0]) {
-      itemWidthRef.current = itemRefs.current[0].offsetWidth;
-    }
-  }, [items]);
-  
-  // Обработчик изменения размера окна
-  useEffect(() => {
-    const handleResize = () => {
-      if (itemRefs.current[0]) {
-        itemWidthRef.current = itemRefs.current[0].offsetWidth;
-      }
-      initCanvas();
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  // Инициализация canvas при монтировании
-  useEffect(() => {
-    initCanvas();
-  }, []);
-  
-  // Очистка таймеров при размонтировании
-  useEffect(() => {
-    return () => {
-      clearTimeout(resultTimeoutRef.current);
-      clearTimeout(fireworksTimeoutRef.current);
-      clearTimeout(thinkingTimeoutRef.current);
-    };
-  }, []);
-  
-  // Очистка анимации при размонтировании
-  useEffect(() => {
-    return () => {
-      if (animationId) cancelAnimationFrame(animationId);
-    };
-  }, [animationId]);
-  
+
   return (
-    <div style={{
-      position: 'relative',
-      width: '100%',
-      height: '100vh',
-      backgroundColor: '#0a0a0a',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      padding: '20px',
-      fontFamily: 'Arial, sans-serif',
-      overflow: 'hidden'
-    }}>
+    <div className="bg-gradient-to-b from-blue-950 via-slate-900 to-indigo-950 text-white min-h-screen font-mono">
+      {/* Абстрактный фон */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] pointer-events-none"></div>
+      <div className="fixed inset-0 opacity-40 bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')]"></div> 
+
       {/* Заголовок */}
-      <h1 style={{
-        fontSize: '2rem',
-        fontWeight: 'bold',
-        marginBottom: '2rem',
-        textAlign: 'center',
-        background: 'linear-gradient(90deg, #00f2ff, #00ff87, #d400ff)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        animation: 'pulse 2s infinite'
-      }}>
-        Выберите победителя
-      </h1>
-      
-      {/* Контейнер для прокрутки */}
-      <div style={{
-        width: '90%',
-        maxWidth: '800px',
-        height: '100px',
-        overflow: 'hidden',
-        position: 'relative',
-        marginBottom: '2rem'
-      }}>
-        {/* Эффект "думающей" прокрутки */}
-        {thinking && (
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: '#00f2ff',
-            animation: 'neonGlow 1s infinite alternate'
-          }}>
-            Думаю...
+      <header className="relative z-10 py-8 px-6 text-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-400 tracking-tight">
+          Конкурс: Профессии в стиле GPT
+        </h1>
+        <p className="mt-2 text-sm md:text-base text-blue-200">Нажмите на голографическую кнопку, чтобы выбрать победителя</p>
+      </header>
+
+      {/* Прогрессбар между заголовком и вариантами */}
+      <div className="flex justify-center mt-6 mb-8 relative z-10">
+        {isSpinning && (
+          <svg width="100" height="100" viewBox="0 0 100 100" className="progress-ring">
+            <circle cx="50" cy="50" r="46" fill="none" stroke="#0f172a" strokeWidth="4" />
+            <circle
+              cx="50"
+              cy="50"
+              r="46"
+              fill="none"
+              stroke="cyan"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeDasharray="289"
+              strokeDashoffset={289 - (289 * progress) / 100}
+              transform="rotate(-90 50 50)"
+              style={{ transition: "stroke-dashoffset 0.3s linear" }}
+            />
+            <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" fontSize="10" fill="white">
+              {Math.round(progress)}%
+            </text>
+          </svg>
+        )}
+      </div>
+
+      {/* Основной контент */}
+      <main className="relative z-10 max-w-4xl mx-auto px-4 pb-10 space-y-6">
+        {/* Предпросмотр во время анимации */}
+        {isSpinning && !winner && (
+          <div className="animate-pulse text-center mt-6">
+            <h3 className="text-xl text-cyan-300 font-bold">{currentPreview.prompt || "Подбираем..."}</h3>
+            <p className="mt-2 italic text-gray-300">{currentPreview.answer || "..."}</p>
           </div>
         )}
-        
-        {/* Линия прокрутки */}
-        <div 
-          style={{
-            display: 'flex',
-            transform: `translateX(-${scrollPosition}px)`,
-            transition: spinning ? 'transform 0.05s linear' : 'transform 0.5s ease-out',
-            position: 'absolute',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          {/* Дублируем элементы для бесконечного скролла */}
-          {[...items, ...items].map((item, index) => (
-            <div 
-              key={`${item.id}-${index}`}
-              ref={(el) => itemRefs.current[index] = el}
-              style={{
-                width: '200px',
-                margin: '0 10px',
-                padding: '15px',
-                backgroundColor: selectedItem?.id === item.id ? '#00f2ff' : 'rgba(255, 255, 255, 0.1)',
-                border: selectedItem?.id === item.id ? '2px solid #00ff87' : '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '10px',
-                boxShadow: selectedItem?.id === item.id ? '0 0 15px rgba(0, 255, 135, 0.5)' : 'none',
-                textAlign: 'center',
-                fontSize: '0.85rem',
-                transition: 'all 0.3s ease',
-                flexShrink: 0,
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-                color: selectedItem?.id === item.id ? '#000' : '#fff'
-              }}
-              title={item.prompt}
-            >
-              {item.prompt}
+
+        {/* Карточка победителя с эффектом взрыва */}
+        {winner && !isSpinning && (
+          <div className="winner-box neon-glow particles-bg bg-slate-800/80 backdrop-blur-md border border-cyan-500/30 rounded-lg p-6 shadow-lg mt-8 animate-fade-in-up">
+            <h3 className="text-xl font-semibold text-cyan-300 font-bold">{winner.prompt}</h3>
+            <p className="mt-2 text-gray-300 italic font-bold">{winner.answer}</p>
+            <div className="gpt-explanation mt-4 bg-slate-700/70 border border-cyan-500/20 rounded-md p-4 text-white text-2xl font-bold">
+              {winner.explanation}
             </div>
-          ))}
-        </div>
-        
-        {/* Эффект затемнения по краям */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100px',
-          height: '100%',
-          background: 'linear-gradient(to right, #0a0a0a, transparent)',
-          pointerEvents: 'none',
-          zIndex: 1
-        }}></div>
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          width: '100px',
-          height: '100%',
-          background: 'linear-gradient(to left, #0a0a0a, transparent)',
-          pointerEvents: 'none',
-          zIndex: 1
-        }}></div>
-      </div>
-      
-      {/* Кнопка */}
-      {showButton && (
-        <button
-          onClick={startScrolling}
-          disabled={spinning}
-          style={{
-            padding: '15px 30px',
-            fontSize: '1.2rem',
-            fontWeight: 'bold',
-            color: 'white',
-            background: 'linear-gradient(90deg, #00f2ff, #d400ff)',
-            borderRadius: '50px',
-            boxShadow: spinning ? '0 0 15px rgba(0, 242, 255, 0.5)' : '0 0 15px rgba(0, 242, 255, 0.3)',
-            border: 'none',
-            cursor: spinning ? 'not-allowed' : 'pointer',
-            transition: 'all 0.3s ease',
-            position: 'relative',
-            overflow: 'hidden',
-            zIndex: 10
-          }}
-          onMouseEnter={(e) => {
-            if (!spinning && !thinking) {
-              e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 242, 255, 0.7)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!spinning && !thinking) {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 242, 255, 0.5)';
-            }
-          }}
-        >
-          {spinning || thinking ? 'Думаю...' : 'Выбрать победителя'}
-        </button>
-      )}
-      
-      {/* Результат */}
-      {showResult && selectedItem && (
-        <div style={{
-          width: '90%',
-          maxWidth: '600px',
-          padding: '20px',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: '10px',
-          boxShadow: '0 0 15px rgba(0, 242, 255, 0.5)',
-          textAlign: 'center',
-          animation: 'fadeIn 1s ease-in-out',
-          marginBottom: '2rem',
-          position: 'relative',
-          zIndex: 11,
-          backdropFilter: 'blur(5px)'
-        }}>
-          <h3 style={{
-            fontSize: '1.2rem',
-            fontWeight: 'bold',
-            marginBottom: '10px',
-            color: '#00f2ff',
-            animation: 'neonGlow 1.5s infinite alternate'
-          }}>
-            Победитель:
-          </h3>
-          <p style={{
-            fontStyle: 'italic',
-            marginBottom: '10px',
-            color: '#00ff87',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}>{selectedItem.prompt}</p>
-          <p style={{
-            color: '#d400ff',
-            fontSize: '0.9rem',
-            marginTop: '15px'
-          }}>{selectedItem.answer}</p>
-          <p style={{
-            fontSize: '0.85rem',
-            color: '#aaaaaa',
-            marginTop: '15px'
-          }}>{selectedItem.justification}</p>
-        </div>
-      )}
-      
-      {/* Canvas для фейерверка */}
-      <canvas 
-        ref={canvasRef} 
-        style={{ 
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: 'none',
-          zIndex: 9
-        }}
-      />
-      
-      {/* Стили для анимаций */}
-      <style>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 0.8; }
-          50% { opacity: 1; }
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes neonGlow {
+          </div>
+        )}
+
+        {/* Контейнер частиц взрыва */}
+        {showExplosion && (
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden flex items-center justify-center">
+            {particles.map((p, i) => (
+              <div
+                key={i}
+                className="data-particle absolute w-2 h-2 rounded-full bg-cyan-400"
+                style={{
+                  animationDelay: `${Math.random() * 0.2}s`,
+                  left: "50%",
+                  top: "50%",
+                  transform: "translate(-50%, -50%)",
+                  animation: "explode 1s ease forwards"
+                }}
+              ></div>
+            ))}
+          </div>
+        )}
+
+        {/* Центральная большая кнопка до первого нажатия */}
+        {!isSpinning && !winner && (
+          <div className="flex justify-center mt-10">
+            <button
+              onClick={selectWinner}
+              className="relative w-64 h-64 rounded-full flex items-center justify-center text-white font-bold uppercase hover:scale-105 active:scale-95 transition-transform duration-300"
+              style={{
+                backgroundImage: "radial-gradient(circle at center, #00f2ff, #001a4d)",
+                boxShadow: "0 0 30px 10px rgba(0, 255, 255, 0.7), 0 0 60px 20px rgba(0, 255, 255, 0.3)",
+                border: "2px solid rgba(0, 255, 255, 0.6)",
+                backdropFilter: "blur(10px)",
+                fontSize: "1.5rem",
+                textAlign: "center",
+                lineHeight: "1.5rem"
+              }}
+            >
+              Выбрать<br />победителя
+            </button>
+          </div>
+        )}
+
+        {/* Мини-кнопка после первого нажатия */}
+        {winner && !isSpinning && (
+          <div className="fixed bottom-6 right-6 hover:scale-110 transition-transform duration-300">
+            <button
+              onClick={selectWinner}
+              className="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold uppercase text-xs"
+              style={{
+                backgroundImage: "radial-gradient(circle at center, #00f2ff, #001a4d)",
+                boxShadow: "0 0 15px 4px rgba(0, 255, 255, 0.6), 0 0 20px 8px rgba(0, 255, 255, 0.3)",
+                border: "2px solid rgba(0, 255, 255, 0.6)",
+                backdropFilter: "blur(5px)"
+              }}
+            >
+              Повтор
+            </button>
+          </div>
+        )}
+      </main>
+
+      {/* Анимации и стили */}
+      <style jsx>{`
+        @keyframes fadeInUp {
           from {
-            text-shadow: 0 0 5px #00f2ff, 0 0 10px #00f2ff, 0 0 20px #00f2ff;
+            opacity: 0;
+            transform: translateY(20px);
           }
           to {
-            text-shadow: 0 0 10px #00f2ff, 0 0 20px #00f2ff, 0 0 30px #00f2ff;
+            opacity: 1;
+            transform: translateY(0);
           }
+        }
+
+        .animate-fade-in-up {
+          animation: fadeInUp 1s ease forwards;
+        }
+
+        .neon-glow {
+          box-shadow: 0 0 15px 4px cyan, 0 0 30px 8px cyan, 0 0 60px 12px rgba(0, 255, 255, 0.4);
+          animation: pulseGlow 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+          from {
+            box-shadow: 0 0 15px 4px cyan, 0 0 30px 8px cyan, 0 0 60px 12px rgba(0, 255, 255, 0.4);
+          }
+          to {
+            box-shadow: 0 0 30px 10px cyan, 0 0 60px 16px rgba(0, 255, 255, 0.7);
+          }
+        }
+
+        .particles-bg::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 200%;
+          height: 200%;
+          background: repeating-radial-gradient(circle, white 1px, transparent 2px), repeating-radial-gradient(circle, white 1px, transparent 2px);
+          animation: particleMove 3s infinite linear;
+          opacity: 0.05;
+          pointer-events: none;
+        }
+
+        @keyframes particleMove {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(-20px, -20px); }
+        }
+
+        .data-particle {
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          background-color: #00ffff;
+          border-radius: 50%;
+          opacity: 1;
+          pointer-events: none;
+        }
+
+        @keyframes explode {
+          from {
+            transform: translate(0, 0) scale(1);
+            opacity: 1;
+          }
+          to {
+            transform: translate(var(--x), var(--y)) scale(0.5);
+            opacity: 0;
+          }
+        }
+
+        .animate-explosion {
+          animation: explode 1s ease-out forwards;
+        }
+
+        .font-mono {
+          font-family: 'Courier New', Courier, monospace;
         }
       `}</style>
     </div>
